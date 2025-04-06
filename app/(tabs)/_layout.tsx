@@ -1,19 +1,13 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Entypo from '@expo/vector-icons/Entypo';
 import { Link, Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>['name'];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -27,10 +21,10 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
       }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Home',
+          tabBarIcon: ({ color }: { color: string }) => <AntDesign name="home" size={24} color={color} style={{ marginBottom: -3 }}/>,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -48,10 +42,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="new"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'New Recipe',
+          tabBarIcon: ({ color }: { color: string }) => <Entypo name="new-message" size={24} color={color} style={{ marginBottom: -3 }}/>,
+        }}
+      />
+      <Tabs.Screen
+        name="recipes"
+        options={{
+          title: 'My Recipe',
+          tabBarIcon: ({ color }: { color: string }) => <Entypo name="list" size={24} color={color} style={{ marginBottom: -3 }}/>,
+        }}
+      />
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: 'Search Recipe',
+          tabBarIcon: ({ color }: { color: string }) => <AntDesign name="search1" size={24} color={color} style={{ marginBottom: -3 }}/>,
         }}
       />
     </Tabs>
