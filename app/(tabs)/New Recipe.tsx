@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-color-literals */
 import { TouchableOpacity, StyleSheet, TextInput, Image, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Text, View } from '@/components/Themed';
@@ -7,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useRecipes } from '@/context/RecipeContext';
 
 export default function NewRecipe() {
-  const [galleryPermission, setGalleryPermission] = useState(false);
+  const [, setGalleryPermission] = useState(false);
   const [imageUri, setImageUri] = useState<string>('');
   const [recipeName, setRecipeName] = useState('');
   const [description, setDescription] = useState('');
@@ -15,7 +14,6 @@ export default function NewRecipe() {
 
   const permisionFunction = async () => {
     const imagePermission = await ImagePicker.getMediaLibraryPermissionsAsync();
-    console.log(imagePermission.status);
     setGalleryPermission(imagePermission.status === 'granted');
     if (imagePermission.status !== 'granted') {
       alert('Permission for media access needed.');
