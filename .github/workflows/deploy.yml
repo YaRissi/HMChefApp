@@ -12,7 +12,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -42,14 +42,14 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 18.x
           cache: 'npm'
       
       - name: Setup Expo
@@ -59,13 +59,7 @@ jobs:
           packager: npm
           token: ${{ secrets.EXPO_TOKEN }}
       
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Prebuild project
-        run: npx expo prebuild --platform android --clean
-      
-      - name: Setup JDK
+      - name: Setup JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
@@ -74,13 +68,14 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
       
-      - name: Build Android Release
-        run: |
-          cd android
-          ./gradlew assembleRelease
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Prebuild project
+        run: eas build --platform android --profile preview --local --output ${{ github.workspace }}/app-release.apk
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: android/app/build/outputs/apk/release/app-release.apk
+          path: ${{ github.workspace }}/app-release.apk
