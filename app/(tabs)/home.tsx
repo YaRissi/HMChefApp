@@ -1,31 +1,30 @@
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '@/components/EditScreenInfo';
+import { StyleSheet, Image } from 'react-native';
 import { Text, View } from '@/components/Themed';
+import { RootStyles } from './_layout';
 
 export default function TabOneScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Home</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+    <View style={RootStyles.container}>
+      <Text style={RootStyles.title}>The Crazy HM Chef</Text>
+      <Image source={require('@/assets/images/chef1.jpg')} style={styles.image} />
+      <Text style={styles.description}>
+        Here you can find and collect the best recipes for your home made meals.
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+  description: {
+    fontSize: 16,
+    marginTop: 20,
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  image: {
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    marginBottom: 20,
   },
 });

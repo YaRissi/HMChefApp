@@ -1,31 +1,41 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import { View } from '@/components/Themed';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
 
 export default function TabTwoScreen() {
+  const [search, setSearch] = useState('');
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>New Recipe</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
+    <View style={styles.searchContainer}>
+      <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search..."
+        value={search}
+        onChangeText={setSearch}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  searchContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginVertical: 10,
+    marginHorizontal: 16,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  searchIcon: {
+    marginRight: 10,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  searchInput: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
   },
 });
