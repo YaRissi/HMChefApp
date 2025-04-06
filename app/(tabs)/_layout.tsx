@@ -19,12 +19,15 @@ export default function TabLayout() {
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="home"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }: { color: string }) => <AntDesign name="home" size={24} color={color} style={{ marginBottom: -3 }}/>,
+          tabBarIcon: ({ color }: { color: string }) => (
+            <AntDesign name="home" size={24} color={color} style={{ marginBottom: -3 }} />
+          ),
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -45,21 +48,27 @@ export default function TabLayout() {
         name="new"
         options={{
           title: 'New Recipe',
-          tabBarIcon: ({ color }: { color: string }) => <Entypo name="new-message" size={24} color={color} style={{ marginBottom: -3 }}/>,
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Entypo name="new-message" size={24} color={color} style={{ marginBottom: -3 }} />
+          ),
         }}
       />
       <Tabs.Screen
         name="recipes"
         options={{
           title: 'My Recipe',
-          tabBarIcon: ({ color }: { color: string }) => <Entypo name="list" size={24} color={color} style={{ marginBottom: -3 }}/>,
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Entypo name="list" size={24} color={color} style={{ marginBottom: -3 }} />
+          ),
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: 'Search Recipe',
-          tabBarIcon: ({ color }: { color: string }) => <AntDesign name="search1" size={24} color={color} style={{ marginBottom: -3 }}/>,
+          tabBarIcon: ({ color }: { color: string }) => (
+            <AntDesign name="search1" size={24} color={color} style={{ marginBottom: -3 }} />
+          ),
         }}
       />
     </Tabs>
