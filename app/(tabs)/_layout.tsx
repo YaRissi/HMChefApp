@@ -6,7 +6,6 @@ import { StyleSheet } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { RecipeProvider } from '@/context/RecipeContext';
 
 export default function TabLayout() {
@@ -17,16 +16,13 @@ export default function TabLayout() {
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-          // Disable the static render of the header on web
-          // to prevent a hydration error in React Navigation v6.
-          headerShown: useClientOnlyValue(false, true),
+          headerTitleAlign: 'center',
         }}
       >
         <Tabs.Screen
-          name="Home"
+          name="index"
           options={{
-            headerTitle: 'Home',
-            headerTitleAlign: 'center',
+            title: 'Home',
             tabBarIcon: ({ color }: { color: string }) => (
               <AntDesign name="home" size={24} color={color} style={RootStyles.icon} />
             ),
@@ -35,8 +31,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="New Recipe"
           options={{
-            headerTitle: 'New Recipe',
-            headerTitleAlign: 'center',
+            title: 'New Recipe',
             tabBarIcon: ({ color }: { color: string }) => (
               <Entypo name="new-message" size={24} color={color} style={RootStyles.icon} />
             ),
@@ -45,8 +40,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="My Recipes"
           options={{
-            headerTitle: 'My Recipe',
-            headerTitleAlign: 'center',
+            title: 'My Recipe',
             tabBarIcon: ({ color }: { color: string }) => (
               <Entypo name="list" size={24} color={color} style={RootStyles.icon} />
             ),
@@ -55,8 +49,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="Search"
           options={{
-            headerTitle: 'Search Recipe',
-            headerTitleAlign: 'center',
+            title: 'Search Recipe',
             tabBarIcon: ({ color }: { color: string }) => (
               <AntDesign name="search1" size={24} color={color} style={RootStyles.icon} />
             ),
