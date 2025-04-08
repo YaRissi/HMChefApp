@@ -25,7 +25,20 @@ export default function TabTwoScreen() {
         let response: Recipe[] = [];
         if (data.meals) {
           for (let i = 0; i < data.meals.length; i++) {
-            const description = data.meals[i].strInstructions;
+            let description = data.meals[i].strInstructions;
+            description += '\n\nIngredients:';
+            for (let j = 1; j <= 20; j++) {
+              if (
+                data.meals[i]['strIngredient' + j] !== '' &&
+                data.meals[i]['strIngredient' + j] !== null
+              ) {
+                description +=
+                  '\n - ' +
+                  data.meals[i]['strMeasure' + j] +
+                  ' ' +
+                  data.meals[i]['strIngredient' + j];
+              }
+            }
             const recipe: Recipe = {
               id: data.meals[i].idMeal,
               name: data.meals[i].strMeal,
