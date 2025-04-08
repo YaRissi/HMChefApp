@@ -1,34 +1,87 @@
 import React from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+  ScrollView,
+} from 'react-native';
 import { useRecipes, Recipe } from '@/context/RecipeContext';
 
-export default function Recipes() {
-  const { recipes, deleteRecipe } = useRecipes();
+interface RecipeProps {
+  recipes: Recipe[];
+  new?: boolean;
+  searched?: boolean;
+}
 
-  const renderItem = ({ item }: { item: Recipe }) => (
-    <View style={styles.recipeCard}>
-      {item.imageUri && <Image source={{ uri: item.imageUri }} style={styles.recipeImage} />}
-      <View style={styles.recipeContent}>
-        <Text style={styles.recipeName}>{item.name}</Text>
-        <Text style={styles.recipeDescription}>{item.description}</Text>
+export default function Recipes({ recipes, new: searching, searched }: RecipeProps) {
+  const { deleteRecipe, addRecipe, allrecipes } = useRecipes();
+  const colorScheme = useColorScheme();
+
+  const textColor = colorScheme === 'light' ? '#000' : '#fff';
+
+  const renderRecipes = ({ item }: { item: Recipe }) => {
+    const isNew = !allrecipes.some(
+      recipe => recipe.name === item.name && recipe.description === item.description,
+    );
+
+    return (
+      <View style={styles.recipeCard}>
+        {item.imageUri && <Image source={{ uri: item.imageUri }} style={styles.recipeImage} />}
+        <View style={styles.recipeContent}>
+          <Text style={[styles.recipeName]}>{item.name}</Text>
+          <ScrollView style={styles.descriptionScrollView} nestedScrollEnabled={true}>
+            <Text style={[styles.recipeDescription]}>{item.description}</Text>
+          </ScrollView>
+        </View>
+        {isNew && (
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => {
+              addRecipe({
+                id: item.id ? item.id : undefined,
+                name: item.name,
+                description: item.description,
+                imageUri: item.imageUri,
+              });
+            }}
+          >
+            <Text style={styles.addButtonText}>Add</Text>
+          </TouchableOpacity>
+        )}
+        {!isNew && (
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => {
+              deleteRecipe(item.id);
+            }}
+          >
+            <Text style={styles.deleteButtonText}>Delete</Text>
+          </TouchableOpacity>
+        )}
       </View>
-      <TouchableOpacity style={styles.deleteButton} onPress={() => deleteRecipe(item.id)}>
-        <Text style={styles.deleteButtonText}>Delete</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   return (
     <View style={styles.container}>
       {recipes.length === 0 ? (
-        <Text style={styles.emptyText}>No recipes added yet.</Text>
+        searching ? (
+          searched ? (
+            <Text style={[styles.emptyText, { color: textColor }]}>
+              No recipes found. Please try a different search term.
+            </Text>
+          ) : (
+            <Text style={[styles.emptyText, { color: textColor }]}></Text>
+          )
+        ) : (
+          <Text style={[styles.emptyText, { color: textColor }]}>No recipes added yet.</Text>
+        )
       ) : (
-        <FlatList
-          data={recipes}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          style={styles.list}
-        />
+        <FlatList data={recipes} renderItem={renderRecipes} />
       )}
     </View>
   );
@@ -37,9 +90,6 @@ export default function Recipes() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-  },
-  list: {
     width: '100%',
   },
   emptyText: {
@@ -74,6 +124,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
   },
+  descriptionScrollView: {
+    maxHeight: 100,
+    paddingRight: 5,
+  },
   recipeDescription: {
     fontSize: 14,
     color: '#666',
@@ -81,6 +135,9 @@ const styles = StyleSheet.create({
   deleteButton: {
     justifyContent: 'center',
     padding: 8,
+  },
+  addButtonText: {
+    color: 'green',
   },
   deleteButtonText: {
     color: 'red',

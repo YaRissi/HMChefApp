@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Text, View } from '@/components/Themed';
 import { RootStyles } from './_layout';
 import { useState, useEffect } from 'react';
-import { useRecipes } from '@/context/RecipeContext';
+import { useRecipes, Recipe } from '@/context/RecipeContext';
 
 export default function NewRecipe() {
   const [, setGalleryPermission] = useState(false);
@@ -41,14 +41,12 @@ export default function NewRecipe() {
       return;
     }
 
-    // Add the recipe to context
     addRecipe({
       name: recipeName,
       description,
       imageUri,
-    });
+    } as Recipe);
 
-    // Reset form fields
     setRecipeName('');
     setDescription('');
     setImageUri('');

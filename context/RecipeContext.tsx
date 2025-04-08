@@ -1,4 +1,3 @@
-// RecipeContext.tsx
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 export interface Recipe {
@@ -9,8 +8,8 @@ export interface Recipe {
 }
 
 interface RecipeContextType {
-  recipes: Recipe[];
-  addRecipe: (recipe: Omit<Recipe, 'id'>) => void;
+  allrecipes: Recipe[];
+  addRecipe: (recipe: Recipe) => void;
   deleteRecipe: (id: string) => void;
 }
 
@@ -31,12 +30,12 @@ interface RecipeProviderProps {
 export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
 
-  const addRecipe = (newRecipe: Omit<Recipe, 'id'>) => {
-    const recipeWithId = {
+  const addRecipe = (newRecipe: Recipe) => {
+    const newrecipe = {
       ...newRecipe,
-      id: Date.now().toString(),
+      id: newRecipe.id || Date.now().toString(),
     };
-    setRecipes(prevRecipes => [...prevRecipes, recipeWithId]);
+    setRecipes(prevRecipes => [...prevRecipes, newrecipe]);
   };
 
   const deleteRecipe = (id: string) => {
@@ -44,7 +43,7 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
   };
 
   return (
-    <RecipeContext.Provider value={{ recipes, addRecipe, deleteRecipe }}>
+    <RecipeContext.Provider value={{ allrecipes: recipes, addRecipe, deleteRecipe }}>
       {children}
     </RecipeContext.Provider>
   );

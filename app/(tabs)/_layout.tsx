@@ -40,7 +40,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="My Recipes"
           options={{
-            title: 'My Recipe',
+            title: 'My Recipes',
             tabBarIcon: ({ color }: { color: string }) => (
               <Entypo name="list" size={24} color={color} style={RootStyles.icon} />
             ),
@@ -52,6 +52,15 @@ export default function TabLayout() {
             title: 'Search Recipe',
             tabBarIcon: ({ color }: { color: string }) => (
               <AntDesign name="search1" size={24} color={color} style={RootStyles.icon} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="Settings"
+          options={{
+            title: 'Settings',
+            tabBarIcon: ({ color }: { color: string }) => (
+              <AntDesign name="setting" size={24} color={color} style={RootStyles.icon} />
             ),
           }}
         />
