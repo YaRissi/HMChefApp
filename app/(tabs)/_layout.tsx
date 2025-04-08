@@ -6,66 +6,64 @@ import { StyleSheet } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
-import { RecipeProvider } from '@/context/RecipeContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <RecipeProvider>
-      <Tabs
-        screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-          headerTitleAlign: 'center',
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        headerTitleAlign: 'center',
+        tabBarLabelStyle: { fontSize: 8 },
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color }: { color: string }) => (
+            <AntDesign name="home" size={24} color={color} style={RootStyles.icon} />
+          ),
         }}
-      >
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Home',
-            tabBarIcon: ({ color }: { color: string }) => (
-              <AntDesign name="home" size={24} color={color} style={RootStyles.icon} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="New Recipe"
-          options={{
-            title: 'New Recipe',
-            tabBarIcon: ({ color }: { color: string }) => (
-              <Entypo name="new-message" size={24} color={color} style={RootStyles.icon} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="My Recipes"
-          options={{
-            title: 'My Recipes',
-            tabBarIcon: ({ color }: { color: string }) => (
-              <Entypo name="list" size={24} color={color} style={RootStyles.icon} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="Search"
-          options={{
-            title: 'Search Recipe',
-            tabBarIcon: ({ color }: { color: string }) => (
-              <AntDesign name="search1" size={24} color={color} style={RootStyles.icon} />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="Settings"
-          options={{
-            title: 'Settings',
-            tabBarIcon: ({ color }: { color: string }) => (
-              <AntDesign name="setting" size={24} color={color} style={RootStyles.icon} />
-            ),
-          }}
-        />
-      </Tabs>
-    </RecipeProvider>
+      />
+      <Tabs.Screen
+        name="New Recipe"
+        options={{
+          title: 'New Recipe',
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Entypo name="new-message" size={24} color={color} style={RootStyles.icon} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="My Recipes"
+        options={{
+          title: 'My Recipes',
+          tabBarIcon: ({ color }: { color: string }) => (
+            <Entypo name="list" size={24} color={color} style={RootStyles.icon} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Search"
+        options={{
+          title: 'Search Recipe',
+          tabBarIcon: ({ color }: { color: string }) => (
+            <AntDesign name="search1" size={24} color={color} style={RootStyles.icon} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color }: { color: string }) => (
+            <AntDesign name="setting" size={24} color={color} style={RootStyles.icon} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
 

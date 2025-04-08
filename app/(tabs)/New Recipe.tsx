@@ -36,8 +36,8 @@ export default function NewRecipe() {
   };
 
   const handleAddRecipe = () => {
-    if (!recipeName.trim()) {
-      Alert.alert('Error', 'Please enter a recipe name');
+    if (!recipeName.trim() || !description.trim() || !imageUri) {
+      Alert.alert('Error', 'Please enter a recipe name, description, and select an image');
       return;
     }
 

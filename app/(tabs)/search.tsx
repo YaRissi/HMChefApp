@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, TextInput, Alert } from 'react-native';
 
 import { View } from '@/components/Themed';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,6 +12,10 @@ export default function TabTwoScreen() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
 
   const handleSearch = () => {
+    if (!search.trim()) {
+      Alert.alert('Error', 'Please enter a search term');
+      return;
+    }
     fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=' + search)
       .then(response => response.json())
       .then(data => {
