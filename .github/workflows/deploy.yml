@@ -3,6 +3,16 @@ name: Lint & Build Android
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'app/**'
+      - 'assets/**'
+      - 'constants/**'
+      - 'context/**'
+      - '.github/workflows/deploy.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'app.json'
+      - 'prettier.config.js'
   workflow_dispatch:
 
 jobs:

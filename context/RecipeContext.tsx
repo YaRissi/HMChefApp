@@ -4,6 +4,7 @@ export interface Recipe {
   id: string;
   name: string;
   description: string;
+  category: string;
   imageUri: string | null;
 }
 

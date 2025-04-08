@@ -43,6 +43,7 @@ export default function TabTwoScreen() {
               id: data.meals[i].idMeal,
               name: data.meals[i].strMeal,
               description: description,
+              category: data.meals[i].strCategory,
               imageUri: data.meals[i].strMealThumb,
             };
             response.push(recipe);

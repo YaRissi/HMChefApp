@@ -4,13 +4,19 @@ import { Text, View } from '@/components/Themed';
 import { RootStyles } from './_layout';
 import { useState, useEffect } from 'react';
 import { useRecipes, Recipe } from '@/context/RecipeContext';
+import { Dropdown } from 'react-native-element-dropdown';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 export default function NewRecipe() {
   const [, setGalleryPermission] = useState(false);
   const [imageUri, setImageUri] = useState<string>('');
   const [recipeName, setRecipeName] = useState('');
+  const [category, setCategory] = useState('');
+  const [allcategories, setAllCategories] = useState<{ label: string; value: string }[]>([]);
   const [description, setDescription] = useState('');
   const { addRecipe } = useRecipes();
+
+  const [isFocus, setIsFocus] = useState(false);
 
   const permisionFunction = async () => {
     const imagePermission = await ImagePicker.getMediaLibraryPermissionsAsync();
@@ -22,6 +28,25 @@ export default function NewRecipe() {
 
   useEffect(() => {
     permisionFunction();
+  }, []);
+
+  useEffect(() => {
+    fetch('https://www.themealdb.com/api/json/v1/1/categories.php')
+      .then(response => response.json())
+      .then(data => {
+        const categories = [];
+        for (const category of data.categories) {
+          const categoryData = {
+            label: category.strCategory,
+            value: category.strCategory,
+          };
+          categories.push(categoryData);
+        }
+        setAllCategories(categories);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
   }, []);
 
   const handleSelectImage = async () => {
@@ -36,8 +61,11 @@ export default function NewRecipe() {
   };
 
   const handleAddRecipe = () => {
-    if (!recipeName.trim() || !description.trim() || !imageUri) {
-      Alert.alert('Error', 'Please enter a recipe name, description, and select an image');
+    if (!recipeName.trim() || !description.trim() || !imageUri || !category) {
+      Alert.alert(
+        'Error',
+        'Please enter a recipe name, description, select an image, and choose a category',
+      );
       return;
     }
 
@@ -45,11 +73,13 @@ export default function NewRecipe() {
       name: recipeName,
       description,
       imageUri,
+      category,
     } as Recipe);
 
     setRecipeName('');
     setDescription('');
     setImageUri('');
+    setCategory('');
   };
 
   return (
@@ -60,6 +90,27 @@ export default function NewRecipe() {
         style={styles.input}
         value={recipeName}
         onChangeText={setRecipeName}
+      />
+      <Dropdown
+        style={styles.dropdown}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        data={allcategories}
+        search
+        maxHeight={250}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? 'Select Category' : '...'}
+        value={category}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={item => {
+          setCategory(item.value);
+          setIsFocus(false);
+        }}
+        renderLeftIcon={() => (
+          <MaterialIcons style={styles.icon} size={20} color={'black'} name="fastfood" />
+        )}
       />
       <TextInput
         placeholder="Description"
@@ -107,5 +158,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#007BFF',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  dropdown: {
+    height: 50,
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    color: 'gray',
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
   },
 });

@@ -32,21 +32,22 @@ export default function Recipes({ recipes, new: searching, searched }: RecipePro
       <View style={styles.recipeCard}>
         {item.imageUri && <Image source={{ uri: item.imageUri }} style={styles.recipeImage} />}
         <View style={styles.recipeContent}>
-          <Text style={[styles.recipeName]}>{item.name}</Text>
+          <Text style={styles.recipeName}>{item.name}</Text>
+          <Text style={styles.category}>{item.category}</Text>
           <ScrollView style={styles.descriptionScrollView} nestedScrollEnabled={true}>
-            <Text style={[styles.recipeDescription]}>{item.description}</Text>
+            <Text style={styles.recipeDescription}>{item.description}</Text>
           </ScrollView>
         </View>
         {isNew && (
           <TouchableOpacity
-            style={styles.deleteButton}
+            style={styles.Button}
             onPress={() => {
               addRecipe({
-                id: item.id ? item.id : undefined,
+                id: item.id ? item.id : null,
                 name: item.name,
                 description: item.description,
                 imageUri: item.imageUri,
-              });
+              } as Recipe);
             }}
           >
             <Text style={styles.addButtonText}>Add</Text>
@@ -54,7 +55,7 @@ export default function Recipes({ recipes, new: searching, searched }: RecipePro
         )}
         {!isNew && (
           <TouchableOpacity
-            style={styles.deleteButton}
+            style={styles.Button}
             onPress={() => {
               deleteRecipe(item.id);
             }}
@@ -122,7 +123,6 @@ const styles = StyleSheet.create({
   recipeName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
   },
   descriptionScrollView: {
     maxHeight: 100,
@@ -130,9 +130,15 @@ const styles = StyleSheet.create({
   },
   recipeDescription: {
     fontSize: 14,
-    color: '#666',
+    color: 'grey',
   },
-  deleteButton: {
+  category: {
+    fontSize: 17,
+    color: 'grey',
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  Button: {
     justifyContent: 'center',
     padding: 8,
   },
