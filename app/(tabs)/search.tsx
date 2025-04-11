@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Recipes from '@/components/Recipes';
 import { Recipe } from '@/context/RecipeContext';
 
-export default function TabTwoScreen() {
+export default function RecipeSearchScreen() {
   const [search, setSearch] = useState('');
   const [searched, setSearched] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);

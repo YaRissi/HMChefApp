@@ -1,4 +1,6 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export interface Recipe {
   id: string;
@@ -12,24 +14,47 @@ interface RecipeContextType {
   allrecipes: Recipe[];
   addRecipe: (recipe: Recipe) => void;
   deleteRecipe: (id: string) => void;
+  clearRecipes: () => void;
 }
 
 const RecipeContext = createContext<RecipeContextType | undefined>(undefined);
 
-export const useRecipes = () => {
-  const context = useContext(RecipeContext);
-  if (!context) {
-    throw new Error('useRecipes must be used within a RecipeProvider');
-  }
-  return context;
-};
+export const useRecipes = () => useContext(RecipeContext);
 
-interface RecipeProviderProps {
-  children: ReactNode;
-}
+const STORAGE_KEY = 'recipes';
 
-export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
+export const RecipeProvider = ({ children }: { children: ReactNode }) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [initialLoading, setinitialLoading] = useState(true);
+
+  useEffect(() => {
+    const loadRecipes = async () => {
+      try {
+        const storedRecipes = await AsyncStorage.getItem(STORAGE_KEY);
+        if (storedRecipes) {
+          setRecipes(JSON.parse(storedRecipes));
+        }
+        setinitialLoading(false);
+      } catch (error) {
+        console.error('Fehler beim Laden der Rezepte:', error);
+      }
+    };
+
+    loadRecipes();
+  }, []);
+
+  useEffect(() => {
+    const saveRecipes = async () => {
+      try {
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(recipes));
+      } catch (error) {
+        console.error('Fehler beim Speichern der Rezepte:', error);
+      }
+    };
+    if (!initialLoading) {
+      saveRecipes();
+    }
+  }, [recipes, initialLoading]);
 
   const addRecipe = (newRecipe: Recipe) => {
     const newrecipe = {
@@ -43,8 +68,12 @@ export const RecipeProvider: React.FC<RecipeProviderProps> = ({ children }) => {
     setRecipes(prevRecipes => prevRecipes.filter(recipe => recipe.id !== id));
   };
 
+  const clearRecipes = () => {
+    setRecipes([]);
+  };
+
   return (
-    <RecipeContext.Provider value={{ allrecipes: recipes, addRecipe, deleteRecipe }}>
+    <RecipeContext.Provider value={{ allrecipes: recipes, addRecipe, deleteRecipe, clearRecipes }}>
       {children}
     </RecipeContext.Provider>
   );

@@ -3,7 +3,7 @@ import { RootStyles } from './_layout';
 import Recipes from '@/components/Recipes';
 import { useRecipes } from '@/context/RecipeContext';
 
-export default function TabTwoScreen() {
+export default function MyRecipeScreen() {
   const { allrecipes } = useRecipes();
 
   return (

@@ -7,7 +7,7 @@ import { useRecipes, Recipe } from '@/context/RecipeContext';
 import { Dropdown } from 'react-native-element-dropdown';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function NewRecipe() {
+export default function NewRecipeScreen() {
   const [, setGalleryPermission] = useState(false);
   const [imageUri, setImageUri] = useState<string>('');
   const [recipeName, setRecipeName] = useState('');

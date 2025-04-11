@@ -2,7 +2,7 @@ import { StyleSheet, Image } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { RootStyles } from './_layout';
 
-export default function TabOneScreen() {
+export default function HomeScreen() {
   return (
     <View style={RootStyles.container}>
       <Text style={RootStyles.title}>The Crazy HM Chef</Text>
