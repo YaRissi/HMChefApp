@@ -4,15 +4,15 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'hmchefapp/app/**'
-      - 'hmchefapp/assets/**'
-      - 'hmchefapp/constants/**'
-      - 'hmchefapp/context/**'
-      - 'hmchefapp/.github/workflows/deploy.yml'
-      - 'hmchefapp/package.json'
-      - 'hmchefapp/package-lock.json'
-      - 'hmchefapp/app.json'
-      - 'hmchefapp/prettier.config.js'
+      - 'app/**'
+      - 'assets/**'
+      - 'constants/**'
+      - 'context/**'
+      - '.github/workflows/deploy.yml'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'app.json'
+      - 'prettier.config.js'
   workflow_dispatch:
 
 jobs:
@@ -24,7 +24,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          sparse-checkout: hmchefapp
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -34,16 +33,16 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: cd hmchefapp && npm ci
+        run: npm ci
 
       - name: ESLint Check
-        run: cd hmchefapp && npm run lint
+        run: npm run lint
 
       - name: Prettier Check
-        run: cd hmchefapp && npx prettier --check "**/*.{js,jsx,ts,tsx,json,css,md}"
+        run: npx prettier --check "**/*.{js,jsx,ts,tsx,json,css,md}"
 
       - name: TypeScript Check
-        run: cd hmchefapp && npx tsc --noEmit
+        run: npx tsc --noEmit
         continue-on-error: true 
 
   build:
@@ -81,10 +80,10 @@ jobs:
         uses: android-actions/setup-android@v3
       
       - name: Install dependencies
-        run: cd hmchefapp && npm ci && npm install -g eas-cli
+        run: npm ci && npm install -g eas-cli
       
       - name: Prebuild project
-        run: cd hmchefapp && eas build --platform android --profile preview --local --output ${{ github.workspace }}/hmchefapp.apk
+        run: eas build --platform android --profile preview --local --output ${{ github.workspace }}/hmchefapp.apk
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
