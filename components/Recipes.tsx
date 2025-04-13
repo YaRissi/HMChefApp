@@ -13,11 +13,11 @@ import { useRecipes, Recipe } from '@/context/RecipeContext';
 
 interface RecipeProps {
   recipes: Recipe[];
-  new?: boolean;
+  searching?: boolean;
   searched?: boolean;
 }
 
-export default function Recipes({ recipes, new: searching, searched }: RecipeProps) {
+export default function Recipes({ recipes, searching, searched }: RecipeProps) {
   const { deleteRecipe, addRecipe, allrecipes } = useRecipes();
   const colorScheme = useColorScheme();
 
@@ -46,6 +46,7 @@ export default function Recipes({ recipes, new: searching, searched }: RecipePro
                 id: item.id ? item.id : null,
                 name: item.name,
                 description: item.description,
+                category: item.category,
                 imageUri: item.imageUri,
               } as Recipe);
             }}
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   recipeContent: {
+    flexDirection: 'column',
     flex: 1,
     marginLeft: 15,
   },

@@ -14,7 +14,7 @@ export default function NewRecipeScreen() {
   const [category, setCategory] = useState('');
   const [allcategories, setAllCategories] = useState<{ label: string; value: string }[]>([]);
   const [description, setDescription] = useState('');
-  const { addRecipe } = useRecipes();
+  const { addRecipe, allrecipes } = useRecipes();
 
   const [isFocus, setIsFocus] = useState(false);
 

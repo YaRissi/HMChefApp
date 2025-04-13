@@ -69,7 +69,7 @@ export default function RecipeSearchScreen() {
           returnKeyType="search"
         />
       </View>
-      <Recipes recipes={recipes} new={true} searched={searched} />
+      <Recipes recipes={recipes} searching={true} searched={searched} />
     </View>
   );
 }
