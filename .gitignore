@@ -1,36 +1,40 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
-node_modules/
+hmchefapp/node_modules/
 
-# Expo
-.expo/
-dist/
-web-build/
-expo-env.d.ts
+hmchefapp/.expo/
+hmchefapp/dist/
+hmchefapp/web-build/
+hmchefapp/expo-env.d.ts
 
 # Native
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
+hmchefapp/*.orig.*
+hmchefapp/*.jks
+hmchefapp/*.p8
+hmchefapp/*.p12
+hmchefapp/*.key
+hmchefapp/*.mobileprovision
 
 # Metro
-.metro-health-check*
+hmchefapp/.metro-health-check*
 
 # debug
-npm-debug.*
-yarn-debug.*
-yarn-error.*
+hmchefapp/npm-debug.*
+hmchefapp/yarn-debug.*
+hmchefapp/yarn-error.*
 
 # macOS
-.DS_Store
-*.pem
+hmchefapp/.DS_Store
+hmchefapp/*.pem
 
 # local env files
-.env*.local
+hmchefapp/.env*.local
 
 # typescript
-*.tsbuildinfo
+hmchefapp/*.tsbuildinfo
+
+# Backend
+backend/.env*.local
+backend/.venv
+__pycache__

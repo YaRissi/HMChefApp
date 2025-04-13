@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  # hmapp:
+  #   image: expo-hmchefapp
+  #   build:
+  #     context: ./hmchefapp
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - ENV_VAR_NAME=value
+  #     - ANOTHER_ENV_VAR=another_value
+  #     - ADDITIONAL_ENV_VAR=additional_value
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - app-network
+  backend:
+    image: recipe-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - BACKEND_ENV_VAR=value
+    depends_on:
+      - db
+    networks:
+      - app-network
+  db:
+    image: redis:latest
+    environment:
+      - REDIS_PASSWORD=mysecretpassword
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
