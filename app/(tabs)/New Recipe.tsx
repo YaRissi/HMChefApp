@@ -51,7 +51,7 @@ export default function NewRecipeScreen() {
 
   const handleSelectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images'],
       quality: 1,
     });
 

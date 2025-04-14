@@ -8,7 +8,7 @@ export interface Recipe {
   name: string;
   description: string;
   category: string;
-  imageUri: string | null;
+  imageUri: string;
 }
 
 interface RecipeContextType {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,11 @@ import {
   TouchableOpacity,
   useColorScheme,
   ScrollView,
+  Modal,
+  Dimensions,
 } from 'react-native';
 import { useRecipes, Recipe } from '@/context/RecipeContext';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 interface RecipeProps {
   recipes: Recipe[];
@@ -19,8 +22,9 @@ interface RecipeProps {
 
 export default function Recipes({ recipes, searching, searched }: RecipeProps) {
   const { deleteRecipe, addRecipe, allrecipes } = useRecipes();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const colorScheme = useColorScheme();
-
   const textColor = colorScheme === 'light' ? '#000' : '#fff';
 
   const renderRecipes = ({ item }: { item: Recipe }) => {
@@ -30,7 +34,14 @@ export default function Recipes({ recipes, searching, searched }: RecipeProps) {
 
     return (
       <View style={styles.recipeCard}>
-        {item.imageUri && <Image source={{ uri: item.imageUri }} style={styles.recipeImage} />}
+        <TouchableOpacity
+          onPress={() => {
+            setSelectedRecipe(item);
+            setModalVisible(true);
+          }}
+        >
+          {item.imageUri && <Image source={{ uri: item.imageUri }} style={styles.recipeImage} />}
+        </TouchableOpacity>
         <View style={styles.recipeContent}>
           <Text style={styles.recipeName}>{item.name}</Text>
           <Text style={styles.category}>{item.category}</Text>
@@ -85,9 +96,48 @@ export default function Recipes({ recipes, searching, searched }: RecipeProps) {
       ) : (
         <FlatList data={recipes} renderItem={renderRecipes} />
       )}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButtonText}>X</Text>
+            </TouchableOpacity>
+
+            {selectedRecipe?.imageUri ? (
+              <Image
+                source={{ uri: selectedRecipe.imageUri }}
+                style={styles.modalImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <View style={[styles.modalImage, styles.noImage]}>
+                <Text style={styles.noImageText}>Image not found</Text>
+              </View>
+            )}
+
+            <View style={styles.modalRecipeContent}>
+              <Text style={styles.recipeName}>{selectedRecipe?.name}</Text>
+              <Text style={styles.category}>{selectedRecipe?.category}</Text>
+              <ScrollView style={(styles.descriptionScrollView, styles.modaldescriptionScrollView)}>
+                <Text style={styles.recipeDescription}>{selectedRecipe?.description}</Text>
+              </ScrollView>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
+
+const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
@@ -149,5 +199,49 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: 'red',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  modalContent: {
+    flex: 1,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    width: 30,
+    height: 30,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  modalImage: {
+    width: '100%',
+    height: windowHeight / 2,
+  },
+  noImage: {
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noImageText: {
+    fontSize: 18,
+    color: 'black',
+  },
+  modalRecipeContent: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: 'white',
+  },
+  modaldescriptionScrollView: {
+    maxHeight: windowHeight / 2,
   },
 });
