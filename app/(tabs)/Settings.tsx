@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, Switch } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { RootStyles } from './_layout';
 import { useAuth } from '@/context/AuthContext';
@@ -9,6 +9,7 @@ export default function SettingsScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [registering, setRegistering] = useState(false);
+  const toggleSwitch = () => setRegistering(registering => !registering);
 
   return (
     <View style={RootStyles.container}>
@@ -25,7 +26,7 @@ export default function SettingsScreen() {
         <>
           <Text style={RootStyles.title}>Welcome to Recipe App!</Text>
           <Text style={styles.Info}>
-            Sign in to access your favorite recipes and save new ones!
+            Sign in to access your recipes and sync them between devices.
           </Text>
           <TextInput
             placeholder="username"
@@ -40,17 +41,29 @@ export default function SettingsScreen() {
             value={password}
             onChangeText={setPassword}
           />
+
+          <View style={styles.switchContainer}>
+            <Text>Login</Text>
+            <Switch
+              trackColor={{ false: '#767577', true: '#81b0ff' }}
+              thumbColor={registering ? '#f5dd4b' : '#f4f3f4'}
+              onValueChange={toggleSwitch}
+              value={registering}
+              style={styles.switch}
+            />
+            <Text>Register</Text>
+          </View>
+
           <TouchableOpacity>
             <Text
               style={styles.button}
               onPress={() => {
                 registering ? register({ username, password }) : login({ username, password });
-                // setPassword('');
-                // setUsername('');
-                // setRegistering(false);
+                setPassword('');
+                setUsername('');
               }}
             >
-              {registering ? 'Register' : 'Login'}
+              {registering ? 'Create Account' : 'Login'}
             </Text>
           </TouchableOpacity>
         </>
@@ -83,5 +96,14 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     marginBottom: 20,
     backgroundColor: 'white',
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  switch: {
+    marginHorizontal: 10,
   },
 });
