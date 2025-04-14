@@ -1,3 +1,3 @@
 [submodule "backend"]
 	path = backend
-	url = git@github.com:YaRissi/HMChefApp-Backend.git
+	url = https://github.com/YaRissi/HMChefApp-Backend.git
