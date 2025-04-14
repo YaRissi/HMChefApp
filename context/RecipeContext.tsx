@@ -38,7 +38,7 @@ const saveRecipesToStorage = async (recipes: Recipe[]) => {
     console.error('Fehler beim Speichern der Rezepte:', error);
   }
 };
-const loadRecipesFromStorage = async (user: User | undefined) => {
+const loadRecipesFromStorage = async (user: User | null) => {
   try {
     if (!user) {
       const storedRecipes = await AsyncStorage.getItem(STORAGE_KEY);
@@ -105,7 +105,7 @@ export const RecipeProvider = ({ children }: { children: ReactNode }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `${user.access_token}`,
         },
         body: JSON.stringify(newrecipe),
       })
@@ -131,7 +131,7 @@ export const RecipeProvider = ({ children }: { children: ReactNode }) => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `${user.access_token}`,
         },
       })
         .then(response => response.json())
