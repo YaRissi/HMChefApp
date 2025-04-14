@@ -84,7 +84,7 @@ jobs:
 
       - name: Prebuild project
         env:
-          EXPO_PUBLIC_API_URL: https://hmapp.yarissi.com
+          EXPO_PUBLIC_API_URL: https://hmchef.yarissi.com
         run: eas build --platform android --profile preview --local --output ${{ github.workspace }}/hmchefapp.apk
 
       - name: Upload APK
