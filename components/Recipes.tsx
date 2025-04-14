@@ -12,7 +12,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { useRecipes, Recipe } from '@/context/RecipeContext';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 interface RecipeProps {
   recipes: Recipe[];
