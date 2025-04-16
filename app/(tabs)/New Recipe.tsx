@@ -6,15 +6,19 @@ import { useState, useEffect } from 'react';
 import { useRecipes, Recipe } from '@/context/RecipeContext';
 import { Dropdown } from 'react-native-element-dropdown';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useAuth } from '@/context/AuthContext';
 
 export default function NewRecipeScreen() {
   const [, setGalleryPermission] = useState(false);
-  const [imageUri, setImageUri] = useState<string>('');
+  const [image, setImage] = useState<ImagePicker.ImagePickerAsset>(
+    {} as ImagePicker.ImagePickerAsset,
+  );
   const [recipeName, setRecipeName] = useState('');
   const [category, setCategory] = useState('');
   const [allcategories, setAllCategories] = useState<{ label: string; value: string }[]>([]);
   const [description, setDescription] = useState('');
   const { addRecipe, allrecipes } = useRecipes();
+  const { user } = useAuth();
 
   const [isFocus, setIsFocus] = useState(false);
 
@@ -56,30 +60,44 @@ export default function NewRecipeScreen() {
     });
 
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+      console.log('Selected image:', result.assets[0]);
+      setImage(result.assets[0]);
     }
   };
 
-  const handleAddRecipe = () => {
-    if (!recipeName.trim() || !description.trim() || !imageUri || !category) {
-      Alert.alert(
-        'Error',
-        'Please enter a recipe name, description, select an image, and choose a category',
+  const handleAddRecipe = async () => {
+    // if (!recipeName.trim() || !description.trim() || !image.uri || !category) {
+    //   Alert.alert(
+    //     'Error',
+    //     'Please enter a recipe name, description, select an image, and choose a category',
+    //   );
+    //   return;
+    // }
+
+    try {
+      // Add recipe with server URL
+      addRecipe(
+        {
+          name: recipeName,
+          description,
+          imageUri: image.uri,
+          category,
+        } as Recipe,
+        image,
       );
-      return;
+
+      // Reset form
+      setRecipeName('');
+      setDescription('');
+      setImage({} as ImagePicker.ImagePickerAsset);
+      setCategory('');
+    } catch (error) {
+      console.error('Fehler beim Hinzufügen des Rezepts:', error);
+      Alert.alert(
+        'Fehler',
+        'Das Rezept konnte nicht hinzugefügt werden. Bitte versuche es erneut.',
+      );
     }
-
-    addRecipe({
-      name: recipeName,
-      description,
-      imageUri,
-      category,
-    } as Recipe);
-
-    setRecipeName('');
-    setDescription('');
-    setImageUri('');
-    setCategory('');
   };
 
   return (
@@ -119,7 +137,7 @@ export default function NewRecipeScreen() {
         value={description}
         onChangeText={setDescription}
       />
-      {imageUri ? <Image source={{ uri: imageUri }} style={styles.image} /> : null}
+      {image.uri ? <Image source={{ uri: image.uri }} style={styles.image} /> : null}
       <TouchableOpacity style={styles.button} onPress={handleSelectImage}>
         <Text>Select Image</Text>
       </TouchableOpacity>

@@ -1,14 +1,20 @@
 import { StyleSheet, Image } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { RootStyles } from './_layout';
+import { useAuth } from '@/context/AuthContext';
 
 export default function HomeScreen() {
+  const { user } = useAuth();
+
   return (
     <View style={RootStyles.container}>
       <Text style={RootStyles.title}>The Crazy HM Chef</Text>
       <Image source={require('@/assets/images/chef1.jpg')} style={styles.image} />
       <Text style={styles.description}>
         Here you can find and collect the best recipes for your home made meals.
+      </Text>
+      <Text style={styles.description}>
+        {!user ? 'Login in settings to sync your recipes across devices.' : ''}
       </Text>
     </View>
   );

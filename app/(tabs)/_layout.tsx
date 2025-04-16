@@ -6,9 +6,13 @@ import { StyleSheet } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
+import { useAuth } from '@/context/AuthContext';
 
-export default function TabLayout() {
+export default function LoggedInTabs() {
   const colorScheme = useColorScheme();
+  const { user } = useAuth();
+
+  const showRecipes = user || process.env.EXPO_PUBLIC_WITHOUT_SYNC;
 
   return (
     <Tabs
@@ -34,6 +38,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }: { color: string }) => (
             <Entypo name="new-message" size={24} color={color} style={RootStyles.icon} />
           ),
+          href: showRecipes ? undefined : null,
         }}
       />
       <Tabs.Screen
@@ -43,6 +48,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }: { color: string }) => (
             <Entypo name="list" size={24} color={color} style={RootStyles.icon} />
           ),
+          href: showRecipes ? undefined : null,
         }}
       />
       <Tabs.Screen
@@ -52,6 +58,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }: { color: string }) => (
             <AntDesign name="search1" size={24} color={color} style={RootStyles.icon} />
           ),
+          href: showRecipes ? undefined : null,
         }}
       />
       <Tabs.Screen

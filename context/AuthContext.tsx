@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import { useRecipes } from './RecipeContext';
 
 interface Credentials {
   username: string;
@@ -32,6 +33,7 @@ const STORAGE_KEY = 'current_user';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const { clearRecipes, addRecipeLocal } = useRecipes();
 
   useEffect(() => {
     const loadUser = async () => {
@@ -49,10 +51,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    const saveUser = async () => {
+    const updateUserData = async () => {
       try {
         if (user) {
           await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+          fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/recipes?user=${user.username}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `${user.access_token}`,
+            },
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.recipes) {
+                for (const recipe of data.recipes) {
+                  console.log('Fetched recipe:', recipe);
+                  addRecipeLocal(recipe);
+                }
+              } else {
+                Alert.alert('Error fetching recipes:', data.detail);
+              }
+            })
+            .catch(error => {
+              Alert.alert('Error fetching recipes:', error);
+            });
         } else {
           await AsyncStorage.removeItem(STORAGE_KEY);
         }
@@ -61,7 +84,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
-    saveUser();
+    updateUserData();
   }, [user]);
 
   const login = async (credentials: Credentials) => {
@@ -84,7 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           };
           setUser(userData);
         } else {
-          Alert.alert('Login failed:', data.message);
+          Alert.alert('Login failed:', data.detail);
         }
       })
       .catch(error => {
@@ -112,8 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           };
           setUser(userData);
         } else {
-          console.error('Error registering:', data);
-          Alert.alert('Registration failed:', data.message);
+          Alert.alert('Registration failed:', data.detail);
         }
       })
       .catch(error => {
@@ -125,6 +147,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     setUser(null);
+    clearRecipes();
   };
 
   return (
