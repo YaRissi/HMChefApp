@@ -45,8 +45,7 @@ export default function SettingsScreen() {
           <View style={styles.switchContainer}>
             <Text>Login</Text>
             <Switch
-              trackColor={{ false: '#767577', true: '#81b0ff' }}
-              thumbColor={registering ? '#f5dd4b' : '#f4f3f4'}
+              thumbColor={registering ? '#007AFF' : '#f4f3f4'}
               onValueChange={toggleSwitch}
               value={registering}
               style={styles.switch}

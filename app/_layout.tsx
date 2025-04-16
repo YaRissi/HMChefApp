@@ -9,6 +9,7 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/components/useColorScheme';
 import { RecipeProvider } from '@/context/RecipeContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { AuthState } from '@/context/AuthState';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -51,14 +52,16 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <AuthProvider>
-      <RecipeProvider>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
-        </ThemeProvider>
-      </RecipeProvider>
-    </AuthProvider>
+    <AuthState>
+      <AuthProvider>
+        <RecipeProvider>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            </Stack>
+          </ThemeProvider>
+        </RecipeProvider>
+      </AuthProvider>
+    </AuthState>
   );
 }

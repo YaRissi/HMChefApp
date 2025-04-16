@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import { useRecipes, Recipe } from '@/context/RecipeContext';
 import { Dropdown } from 'react-native-element-dropdown';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useAuth } from '@/context/AuthContext';
 
 export default function NewRecipeScreen() {
   const [, setGalleryPermission] = useState(false);
@@ -17,8 +16,7 @@ export default function NewRecipeScreen() {
   const [category, setCategory] = useState('');
   const [allcategories, setAllCategories] = useState<{ label: string; value: string }[]>([]);
   const [description, setDescription] = useState('');
-  const { addRecipe, allrecipes } = useRecipes();
-  const { user } = useAuth();
+  const { addRecipe } = useRecipes();
 
   const [isFocus, setIsFocus] = useState(false);
 
@@ -48,8 +46,8 @@ export default function NewRecipeScreen() {
         }
         setAllCategories(categories);
       })
-      .catch(error => {
-        console.error('Error fetching data:', error);
+      .catch(() => {
+        Alert.alert('Error', 'Failed to fetch categories.');
       });
   }, []);
 
@@ -60,22 +58,20 @@ export default function NewRecipeScreen() {
     });
 
     if (!result.canceled) {
-      console.log('Selected image:', result.assets[0]);
       setImage(result.assets[0]);
     }
   };
 
   const handleAddRecipe = async () => {
-    // if (!recipeName.trim() || !description.trim() || !image.uri || !category) {
-    //   Alert.alert(
-    //     'Error',
-    //     'Please enter a recipe name, description, select an image, and choose a category',
-    //   );
-    //   return;
-    // }
+    if (!recipeName.trim() || !description.trim() || !image.uri || !category) {
+      Alert.alert(
+        'Error',
+        'Please enter a recipe name, description, select an image, and choose a category',
+      );
+      return;
+    }
 
     try {
-      // Add recipe with server URL
       addRecipe(
         {
           name: recipeName,
@@ -86,17 +82,12 @@ export default function NewRecipeScreen() {
         image,
       );
 
-      // Reset form
       setRecipeName('');
       setDescription('');
       setImage({} as ImagePicker.ImagePickerAsset);
       setCategory('');
-    } catch (error) {
-      console.error('Fehler beim Hinzufügen des Rezepts:', error);
-      Alert.alert(
-        'Fehler',
-        'Das Rezept konnte nicht hinzugefügt werden. Bitte versuche es erneut.',
-      );
+    } catch {
+      Alert.alert('Error', 'The recipe could not be added. Please try again.');
     }
   };
 

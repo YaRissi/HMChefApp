@@ -1,16 +1,12 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { useRecipes } from './RecipeContext';
+import { Recipe, useRecipes } from './RecipeContext';
+import { useAuthState, User } from './AuthState';
 
 interface Credentials {
   username: string;
   password: string;
-}
-
-export interface User {
-  username: string;
-  access_token: string;
 }
 
 export interface AuthContextType {
@@ -32,7 +28,7 @@ export const useAuth = () => useContext(AuthContext);
 const STORAGE_KEY = 'current_user';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const { user, setUser } = useAuthState();
   const { clearRecipes, addRecipeLocal } = useRecipes();
 
   useEffect(() => {
@@ -43,49 +39,53 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUser(JSON.parse(storedUser));
         }
       } catch {
-        Alert.alert('Error loading user:');
+        Alert.alert('Error', 'Failed to load user data.');
       }
     };
 
     loadUser();
-  }, []);
+  }, [setUser]);
 
   useEffect(() => {
     const updateUserData = async () => {
       try {
-        if (user) {
-          await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-          fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/recipes?user=${user.username}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `${user.access_token}`,
-            },
-          })
-            .then(response => response.json())
-            .then(data => {
-              if (data.recipes) {
-                for (const recipe of data.recipes) {
-                  console.log('Fetched recipe:', recipe);
-                  addRecipeLocal(recipe);
-                }
-              } else {
-                Alert.alert('Error fetching recipes:', data.detail);
-              }
-            })
-            .catch(error => {
-              Alert.alert('Error fetching recipes:', error);
-            });
-        } else {
+        if (!user) {
           await AsyncStorage.removeItem(STORAGE_KEY);
+          return;
         }
+
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+
+        fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/recipes?user=${user.username}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${user.access_token}`,
+          },
+        })
+          .then(response => response.json())
+          .then(data => {
+            for (const recipe of data.recipes) {
+              const recipeData = {
+                id: recipe.id,
+                name: recipe.name,
+                description: recipe.description,
+                category: recipe.category,
+                imageUri: recipe.imageUri,
+              } as Recipe;
+              addRecipeLocal(recipeData);
+            }
+          })
+          .catch(() => {
+            Alert.alert('Error', 'Failed to fetch recipes.');
+          });
       } catch {
-        Alert.alert('Error saving user:');
+        Alert.alert('Error', 'Failed to update user data.');
       }
     };
 
     updateUserData();
-  }, [user]);
+  }, [user, addRecipeLocal]);
 
   const login = async (credentials: Credentials) => {
     fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/auth/login`, {
@@ -105,13 +105,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             username: credentials.username,
             access_token: data.access_token,
           };
+
           setUser(userData);
         } else {
-          Alert.alert('Login failed:', data.detail);
+          Alert.alert('Login Error', data.detail || 'Please check your login credentials');
         }
       })
-      .catch(error => {
-        Alert.alert('Error logging in:', error);
+      .catch(() => {
+        Alert.alert('Login Error', 'An error occurred during login. Please try again.');
       });
   };
 
@@ -133,21 +134,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             username: credentials.username,
             access_token: data.access_token,
           };
+
           setUser(userData);
         } else {
-          Alert.alert('Registration failed:', data.detail);
+          Alert.alert(
+            'Registration Error',
+            data.detail || 'The registration could not be completed.',
+          );
         }
       })
-      .catch(error => {
-        console.error('Error registering:', error);
-        // Handle error
-        Alert.alert('Error registering');
+      .catch(() => {
+        Alert.alert(
+          'Registration Error',
+          'An error occurred during registration. Please try again.',
+        );
       });
   };
 
   const logout = async () => {
-    setUser(null);
     clearRecipes();
+    setUser(null);
   };
 
   return (

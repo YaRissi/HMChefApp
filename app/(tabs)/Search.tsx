@@ -51,8 +51,8 @@ export default function RecipeSearchScreen() {
         }
         setRecipes(response);
       })
-      .catch(error => {
-        console.error('Error fetching data:', error);
+      .catch(() => {
+        Alert.alert('Error', 'Failed to fetch data');
       });
   };
 

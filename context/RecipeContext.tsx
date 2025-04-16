@@ -1,8 +1,8 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAuth, User } from './AuthContext';
 import { Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { useAuthState, User } from './AuthState';
 
 export interface Recipe {
   id: string;
@@ -37,8 +37,8 @@ const STORAGE_KEY = 'recipes';
 const saveRecipesToStorage = async (recipes: Recipe[]) => {
   try {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(recipes));
-  } catch (error) {
-    console.error('Fehler beim Speichern der Rezepte:', error);
+  } catch {
+    Alert.alert('Error', 'Failed to save recipes.');
   }
 };
 export const loadRecipesFromStorage = async (user: User | null) => {
@@ -49,19 +49,20 @@ export const loadRecipesFromStorage = async (user: User | null) => {
         return JSON.parse(storedRecipes) as Recipe[];
       }
       return [];
-    } else {
-      const response = await fetch(`${process.env.API_URL}/api/recipes?user=${user.username}`, {
+    }
+    const response = await fetch(
+      `${process.env.EXPO_PUBLIC_API_URL}/api/recipes?user=${user.username}`,
+      {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `${user.access_token}`,
         },
-      });
-      const data = await response.json();
-      return data.recipes || [];
-    }
-  } catch (error) {
-    console.error('Fehler beim Laden der Rezepte:', error);
+      },
+    );
+    const data = await response.json();
+    return data.recipes || [];
+  } catch {
     return [];
   }
 };
@@ -69,29 +70,21 @@ export const loadRecipesFromStorage = async (user: User | null) => {
 export const RecipeProvider = ({ children }: { children: ReactNode }) => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [initialLoading, setinitialLoading] = useState(true);
-  const { user } = useAuth();
+  const { user } = useAuthState();
 
   useEffect(() => {
     const loadRecipes = async () => {
-      try {
-        const storedRecipes = await loadRecipesFromStorage(user);
-        setRecipes(storedRecipes);
-        setinitialLoading(false);
-      } catch (error) {
-        console.error('Fehler beim Laden der Rezepte:', error);
-      }
+      const storedRecipes = await loadRecipesFromStorage(user);
+      setRecipes(storedRecipes);
+      setinitialLoading(false);
     };
 
     loadRecipes();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     const saveRecipes = async () => {
-      try {
-        await saveRecipesToStorage(recipes);
-      } catch (error) {
-        console.error('Fehler beim Speichern der Rezepte:', error);
-      }
+      await saveRecipesToStorage(recipes);
     };
     if (!initialLoading) {
       saveRecipes();
@@ -110,7 +103,6 @@ export const RecipeProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       if (!user) {
-        console.log('User not logged in, adding recipe locally');
         setRecipes(prevRecipes => [...prevRecipes, newrecipe]);
         return;
       }
@@ -144,8 +136,8 @@ export const RecipeProvider = ({ children }: { children: ReactNode }) => {
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('Upload failed:', errorText);
-          throw new Error(`Upload failed: ${response.status}`);
+          Alert.alert('Upload failed', errorText);
+          return;
         }
 
         const data = await response.json();
@@ -171,45 +163,43 @@ export const RecipeProvider = ({ children }: { children: ReactNode }) => {
       );
 
       const recipeData = await recipeResponse.json();
-      console.log('Response:', recipeData);
 
       if (!recipeData.success) {
         Alert.alert('Fehler', `The recipe couldnt be added. ${recipeData.detail || ''}`);
         return;
       }
-      console.log('Adding recipe:', newrecipeWithServerUrl);
 
       setRecipes(prevRecipes => [...prevRecipes, newrecipeWithServerUrl]);
-      console.log('Rezept erfolgreich hinzugefügt:', recipeData);
-    } catch (error) {
-      console.error('Fehler beim Hinzufügen des Rezepts:', error);
-      Alert.alert('Fehler', 'Das Rezept konnte nicht hinzugefügt werden.');
+      Alert.alert('Success', 'The recipe was successfully added.');
+    } catch {
+      Alert.alert('Error', 'The recipe could not be added.');
     }
   };
 
   const deleteRecipe = (id: string) => {
-    if (user) {
-      fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/recipes?id=${id}&user=${user.username}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `${user.access_token}`,
-        },
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            setRecipes(prevRecipes => prevRecipes.filter(recipe => recipe.id !== id));
-          } else {
-            Alert.alert('Fehler', 'Das Rezept konnte nicht gelöscht werden.');
-          }
-        })
-        .catch(() => {
-          Alert.alert('Fehler', 'Das Rezept konnte nicht gelöscht werden.');
-        });
-    } else {
+    if (!user) {
       setRecipes(prevRecipes => prevRecipes.filter(recipe => recipe.id !== id));
+      return;
     }
+
+    fetch(`${process.env.EXPO_PUBLIC_API_URL}/api/recipes?id=${id}&user=${user.username}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${user.access_token}`,
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          setRecipes(prevRecipes => prevRecipes.filter(recipe => recipe.id !== id));
+        } else {
+          Alert.alert('Error', 'The recipe could not be deleted.');
+        }
+      })
+      .catch(() => {
+        Alert.alert('Error', 'The recipe could not be deleted.');
+      });
   };
 
   const checkIfRecipeExists = (id: string) => {
@@ -218,8 +208,7 @@ export const RecipeProvider = ({ children }: { children: ReactNode }) => {
 
   const clearRecipes = () => {
     setRecipes([]);
-    try {
-    } catch (error) {}
+    saveRecipesToStorage([]);
   };
 
   return (
