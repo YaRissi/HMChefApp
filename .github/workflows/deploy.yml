@@ -84,7 +84,9 @@ jobs:
         run: npm ci && npm install -g eas-cli
 
       - name: Prebuild project
-        run: eas build --platform android --profile preview --local --output ${{ github.workspace }}/hmchefapp.apk
+        run: |
+          cp .github/eas.json eas.json
+          eas build --platform android --profile preview --local --output ${{ github.workspace }}/hmchefapp.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
