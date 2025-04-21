@@ -9,6 +9,7 @@
 ### Installation
 
 1. **Requirements:**
+
    - [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/) installed
 
 2. **Start the backend:**
@@ -31,12 +32,12 @@
 
 There is a `.env` file in the project that allows you to control the app's behavior. The variables are:
 
-| Variable                    | Description                                                                  | Example value                       |
-|-----------------------------|-------------------------------------------------------------------------------|-------------------------------------|
-| EXPO_PUBLIC_API_URL         | URL to the backend server.                                                    | https://hmchef.yarissi.com          |
-|                             | For Android emulator: `http://10.0.2.2:8001`                                 |                                     |
-|                             | For iOS simulator: `http://localhost:8001`                                   |                                     |
-| EXPO_PUBLIC_WITHOUT_SYNC    | (Optional, commented out) App runs without backend, for testing purposes only.| false                               |
+| Variable                 | Description                                                                    | Example value              |
+| ------------------------ | ------------------------------------------------------------------------------ | -------------------------- |
+| EXPO_PUBLIC_API_URL      | URL to the backend server.                                                     | https://hmchef.yarissi.com |
+|                          | For Android emulator: `http://10.0.2.2:8001`                                   |                            |
+|                          | For iOS simulator: `http://localhost:8001`                                     |                            |
+| EXPO_PUBLIC_WITHOUT_SYNC | (Optional, commented out) App runs without backend, for testing purposes only. | false                      |
 
 **Important!** If you change anything in this file, close and reopen the terminal so the changes take effect.
 
