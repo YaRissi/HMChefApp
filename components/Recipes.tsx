@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   descriptionScrollView: {
-    maxHeight: 70,
+    maxHeight: 80,
     paddingRight: 5,
   },
   recipeDescription: {
