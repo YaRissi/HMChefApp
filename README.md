@@ -36,7 +36,7 @@ There is a `.env` file in the project that allows you to control the app's behav
 | ------------------------ | ------------------------------------------------------------------------------ | -------------------------- |
 | EXPO_PUBLIC_API_URL      | URL to the backend server.                                                     | https://hmchef.yarissi.com |
 |                          | For Android emulator: `http://10.0.2.2:8001`                                   |                            |
-|                          | For iOS simulator: `http://localhost:8001`                                     |                            |
+|                          | For iOS emulator: `http://localhost:8001`                                      |                            |
 | EXPO_PUBLIC_WITHOUT_SYNC | (Optional, commented out) App runs without backend, for testing purposes only. | false                      |
 
 **Important!** If you change anything in this file, close and reopen the terminal so the changes take effect.
