@@ -1,8 +1,9 @@
-import { StyleSheet, TextInput, TouchableOpacity, Switch } from 'react-native';
+import { StyleSheet, TouchableOpacity, Switch } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import { RootStyles } from './_layout';
 import { useAuth } from '@/context/AuthContext';
 import { useState } from 'react';
+import AppInput from '@/components/AppInput';
 
 export default function SettingsScreen() {
   const { user, login, register, logout } = useAuth();
@@ -28,18 +29,20 @@ export default function SettingsScreen() {
           <Text style={styles.Info}>
             Sign in to access your recipes and sync them between devices.
           </Text>
-          <TextInput
+          <AppInput
+            input={username}
             placeholder="username"
-            style={[styles.input]}
-            value={username}
-            onChangeText={setUsername}
+            iconName="user"
+            iconPack="AntDesign"
+            setInput={setUsername}
           />
-          <TextInput
+          <AppInput
+            input={password}
             placeholder="password"
-            style={[styles.input]}
             secureTextEntry={true}
-            value={password}
-            onChangeText={setPassword}
+            iconName="password"
+            iconPack="MaterialIcons"
+            setInput={setPassword}
           />
 
           <View style={styles.switchContainer}>
@@ -85,16 +88,6 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     textAlign: 'center',
     marginTop: 20,
-  },
-  input: {
-    width: '80%',
-    height: 40,
-    padding: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: 'gray',
-    marginBottom: 20,
-    backgroundColor: 'white',
   },
   switchContainer: {
     flexDirection: 'row',

@@ -9,12 +9,12 @@ export default function HomeScreen() {
   return (
     <View style={RootStyles.container}>
       <Text style={RootStyles.title}>The Crazy HM Chef</Text>
-      <Image source={require('@/assets/images/chef1.jpg')} style={styles.image} />
+      <Image source={require('@/assets/images/chef.jpg')} style={styles.image} />
       <Text style={styles.description}>
         Here you can find and collect the best recipes for your home made meals.
       </Text>
       <Text style={styles.description}>
-        {!user ? 'Login in settings to sync your recipes across devices.' : ''}
+        {!user ? 'Login in to sync your recipes across devices.' : ''}
       </Text>
     </View>
   );

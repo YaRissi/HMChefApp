@@ -1,9 +1,12 @@
 services:
   backend:
-    image: ghcr.io/yarissi/hmchefapp-backend:latest
+    image: hmchefapp-backend
+    build:
+      context: backend
+      dockerfile: Dockerfile
     pull_policy: always
     ports:
-      - "8000:8000"
+      - "8001:8001"
     env_file:
       - backend/.env
     environment:

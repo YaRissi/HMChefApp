@@ -37,7 +37,6 @@ export default [
       
       // React Native specific rules
       'react-native/no-unused-styles': 'error',
-      'react-native/no-inline-styles': 'warn',
       'react-native/no-raw-text': 'warn',
       
       // React hooks rules

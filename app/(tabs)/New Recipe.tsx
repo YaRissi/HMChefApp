@@ -6,9 +6,10 @@ import { useState, useEffect } from 'react';
 import { useRecipes, Recipe } from '@/context/RecipeContext';
 import { Dropdown } from 'react-native-element-dropdown';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { tintColorLight } from '@/constants/Colors';
+import AppInput from '@/components/AppInput';
 
 export default function NewRecipeScreen() {
-  const [, setGalleryPermission] = useState(false);
   const [image, setImage] = useState<ImagePicker.ImagePickerAsset>(
     {} as ImagePicker.ImagePickerAsset,
   );
@@ -19,18 +20,6 @@ export default function NewRecipeScreen() {
   const { addRecipe } = useRecipes();
 
   const [isFocus, setIsFocus] = useState(false);
-
-  const permisionFunction = async () => {
-    const imagePermission = await ImagePicker.getMediaLibraryPermissionsAsync();
-    setGalleryPermission(imagePermission.status === 'granted');
-    if (imagePermission.status !== 'granted') {
-      alert('Permission for media access needed.');
-    }
-  };
-
-  useEffect(() => {
-    permisionFunction();
-  }, []);
 
   useEffect(() => {
     fetch('https://www.themealdb.com/api/json/v1/1/categories.php')
@@ -51,7 +40,7 @@ export default function NewRecipeScreen() {
       });
   }, []);
 
-  const handleSelectImage = async () => {
+  const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       quality: 1,
@@ -94,16 +83,18 @@ export default function NewRecipeScreen() {
   return (
     <View style={RootStyles.container}>
       <Text style={RootStyles.title}>Add a New Recipe</Text>
-      <TextInput
+      <AppInput
+        input={recipeName}
         placeholder="Recipe Name"
-        style={styles.input}
-        value={recipeName}
-        onChangeText={setRecipeName}
+        iconName="drive-file-rename-outline"
+        iconPack="MaterialIcons"
+        setInput={setRecipeName}
+        returnKeyType="next"
       />
       <Dropdown
         style={styles.dropdown}
-        placeholderStyle={styles.placeholderStyle}
-        selectedTextStyle={styles.selectedTextStyle}
+        placeholderStyle={[styles.placeholder, styles.text]}
+        selectedTextStyle={styles.text}
         data={allcategories}
         search
         maxHeight={250}
@@ -128,8 +119,8 @@ export default function NewRecipeScreen() {
         value={description}
         onChangeText={setDescription}
       />
-      {image.uri ? <Image source={{ uri: image.uri }} style={styles.image} /> : null}
-      <TouchableOpacity style={styles.button} onPress={handleSelectImage}>
+      {image.uri && <Image source={{ uri: image.uri }} style={styles.image} />}
+      <TouchableOpacity style={styles.button} onPress={pickImage}>
         <Text>Select Image</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleAddRecipe}>
@@ -145,9 +136,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: 'gray',
     marginBottom: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#f0f0f0',
   },
   inputDescription: {
     height: 100,
@@ -164,26 +154,27 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     borderRadius: 5,
-    backgroundColor: '#007BFF',
+    backgroundColor: tintColorLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dropdown: {
-    height: 50,
+    height: 45,
     width: '80%',
-    backgroundColor: 'white',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 20,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginHorizontal: 15,
+    marginBottom: 10,
   },
   icon: {
-    marginRight: 5,
+    marginRight: 13,
   },
-  placeholderStyle: {
+  text: {
+    fontSize: 16,
+  },
+  placeholder: {
     color: 'gray',
-    fontSize: 16,
-  },
-  selectedTextStyle: {
-    fontSize: 16,
   },
 });

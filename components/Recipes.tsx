@@ -24,7 +24,7 @@ export default function Recipes({ recipes, searching, searched }: RecipeProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const colorScheme = useColorScheme();
-  const textColor = colorScheme === 'light' ? '#000' : '#fff';
+  const textColor = colorScheme === 'dark' ? '#fff' : '#000';
 
   const renderRecipes = ({ item }: { item: Recipe }) => {
     const isNew = !allrecipes.some(
@@ -50,7 +50,7 @@ export default function Recipes({ recipes, searching, searched }: RecipeProps) {
         </View>
         {isNew && (
           <TouchableOpacity
-            style={styles.Button}
+            style={styles.button}
             onPress={() => {
               addRecipe({
                 id: item.id ? item.id : null,
@@ -66,7 +66,7 @@ export default function Recipes({ recipes, searching, searched }: RecipeProps) {
         )}
         {!isNew && (
           <TouchableOpacity
-            style={styles.Button}
+            style={styles.button}
             onPress={() => {
               deleteRecipe(item.id);
             }}
@@ -152,14 +152,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 15,
     marginVertical: 8,
-    marginHorizontal: 16,
+    marginHorizontal: 15,
     borderRadius: 8,
     backgroundColor: 'white',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowColor: 'black',
+    elevation: 5,
   },
   recipeImage: {
     width: 80,
@@ -175,21 +172,21 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  descriptionScrollView: {
-    maxHeight: 100,
-    paddingRight: 5,
-  },
-  recipeDescription: {
-    fontSize: 14,
-    color: 'grey',
-  },
   category: {
     fontSize: 17,
     color: 'grey',
     fontWeight: 'bold',
     marginBottom: 5,
   },
-  Button: {
+  descriptionScrollView: {
+    maxHeight: 70,
+    paddingRight: 5,
+  },
+  recipeDescription: {
+    fontSize: 14,
+    color: 'grey',
+  },
+  button: {
     justifyContent: 'center',
     padding: 8,
   },
@@ -213,10 +210,10 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 10,
+    zIndex: 1,
   },
   closeButtonText: {
     color: 'white',

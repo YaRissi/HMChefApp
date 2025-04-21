@@ -1,10 +1,10 @@
-import { StyleSheet, TextInput, Alert } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 
 import { View } from '@/components/Themed';
-import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
-import Recipes from '@/components/Recipes';
 import { Recipe } from '@/context/RecipeContext';
+import AppInput from '@/components/AppInput';
+import Recipes from '@/components/Recipes';
 
 export default function RecipeSearchScreen() {
   const [search, setSearch] = useState('');
@@ -58,17 +58,16 @@ export default function RecipeSearchScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#666" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search..."
-          value={search}
-          onChangeText={setSearch}
-          onSubmitEditing={handleSearch}
-          returnKeyType="search"
-        />
-      </View>
+      <AppInput
+        input={search}
+        placeholder="Search for a recipe..."
+        iconName="search"
+        iconPack="Ionicons"
+        returnKeyType="search"
+        style={{ width: null }}
+        setInput={setSearch}
+        onSubmit={handleSearch}
+      />
       <Recipes recipes={recipes} searching={true} searched={searched} />
     </View>
   );
@@ -80,22 +79,5 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     width: '100%',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginVertical: 10,
-    marginHorizontal: 16,
-  },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    fontSize: 16,
   },
 });
