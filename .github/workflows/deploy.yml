@@ -53,7 +53,7 @@ jobs:
   build:
     name: Build Android Release
     needs: lint
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout code
