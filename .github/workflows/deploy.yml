@@ -89,7 +89,7 @@ jobs:
       - name: Prebuild project
         run: |
           cp .github/eas.json eas.json
-          jq '.expo.extra.eas.projectId = " ${{ env.PROJECT_ID }}"' app.json > app.json.tmp && mv app.json.tmp app.json
+          jq '.expo.extra.eas.projectId = "${{ env.PROJECT_ID }}"' app.json > app.json.tmp && mv app.json.tmp app.json
           eas build --platform android --profile preview --local --output ${{ github.workspace }}/hmchefapp.apk
 
       - name: Upload APK
