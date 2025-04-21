@@ -8,6 +8,7 @@ on:
       - 'assets/**'
       - 'constants/**'
       - 'context/**'
+      - 'components/**'
       - '.github/workflows/deploy.yml'
       - 'package.json'
       - 'package-lock.json'
