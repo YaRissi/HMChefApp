@@ -60,3 +60,4 @@ There is a `.env` file in the project that allows you to control the app's behav
 - [x] Make the context not delete everything on close
 - [x] Bug: Category doesn't get displayed right in the My Recipes Tab
 - [ ] Reset the state in settings page to login if user acc was created
+- [ ] Reset search state im tab changed, so the same search isnt still there if user changed
