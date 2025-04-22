@@ -23,7 +23,7 @@ env:
 jobs:
   lint:
     name: Lint and Format
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -53,7 +53,7 @@ jobs:
   build:
     name: Build Android Release
     needs: lint
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
