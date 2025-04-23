@@ -63,6 +63,7 @@ export default function SettingsScreen() {
                 registering ? register({ username, password }) : login({ username, password });
                 setPassword('');
                 setUsername('');
+                setRegistering(false);
               }}
             >
               {registering ? 'Create Account' : 'Login'}

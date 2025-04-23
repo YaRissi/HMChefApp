@@ -1,7 +1,8 @@
 import { StyleSheet, Alert } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
 import { View } from '@/components/Themed';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Recipe } from '@/context/RecipeContext';
 import AppInput from '@/components/AppInput';
 import Recipes from '@/components/Recipes';
@@ -10,6 +11,15 @@ export default function RecipeSearchScreen() {
   const [search, setSearch] = useState('');
   const [searched, setSearched] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (!isFocused) {
+      setSearched(false);
+      setSearch('');
+      setRecipes([]);
+    }
+  }, [isFocused]);
 
   const handleSearch = () => {
     if (!search.trim()) {
